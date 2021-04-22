@@ -5,11 +5,14 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import br.com.zupacademy.jonathan.casadocodigo.config.validation.UniqueValue;
+
 public class AutorRequest {
 	@NotBlank
     private String nome;
 	@NotBlank
     @Email
+    @UniqueValue(domainClass = Autor.class, fieldName = "email", message = "Já existe um(a) autor(a) com esse e-mail")
     private String email;
     @NotBlank
     @Length(max = 400)

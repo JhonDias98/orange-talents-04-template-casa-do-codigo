@@ -5,10 +5,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +18,18 @@ public class CategoriaController {
 	@PersistenceContext
 	private EntityManager manager;
 	
-	@Autowired
-	private ProibeNomeCategoriaDuplicadoValidator proibeNomeCategoriaDuplicadoValidator;
-	
-	/**
-     * método com a anotação @InitBinder o código é executado no primeiro request
-     */
-	@InitBinder
-	public void init(WebDataBinder binder) {
-		binder.addValidators(proibeNomeCategoriaDuplicadoValidator);
-	}
+	//classe com validação e método init não é mais necessário.
+	//annotation customizada já está fazendo a validação.
+//	@Autowired
+//	private ProibeNomeCategoriaDuplicadoValidator proibeNomeCategoriaDuplicadoValidator;
+//	
+//	/**
+//     * método com a anotação @InitBinder o código é executado no primeiro request
+//     */
+//	@InitBinder
+//	public void init(WebDataBinder binder) {
+//		binder.addValidators(proibeNomeCategoriaDuplicadoValidator);
+//	}
 	
 	@PostMapping
 	@Transactional
