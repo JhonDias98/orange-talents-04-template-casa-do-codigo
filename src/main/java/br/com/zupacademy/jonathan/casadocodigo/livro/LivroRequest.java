@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 
 import br.com.zupacademy.jonathan.casadocodigo.autor.Autor;
 import br.com.zupacademy.jonathan.casadocodigo.categoria.Categoria;
+import br.com.zupacademy.jonathan.casadocodigo.config.validation.ExistsValue;
 import br.com.zupacademy.jonathan.casadocodigo.config.validation.UniqueValue;
 
 public class LivroRequest {
@@ -24,6 +25,7 @@ public class LivroRequest {
 	@NotBlank
 	@Size(max = 500)
 	private String resumo;
+	@NotBlank
 	private String sumario;
 	@NotNull
 	@Min(20)
@@ -35,16 +37,19 @@ public class LivroRequest {
 	@UniqueValue(domainClass = Livro.class, fieldName = "isbn", message = "O Isbn informado já existe")
 	private String isbn;
 	@Future
+	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING)
 	private LocalDate dataPublicacao;
 	@NotNull
+	@ExistsValue(fieldName = "id", targetClass = Categoria.class, message = "Id da Categoria não existe")
 	private Long categoriaId;
 	@NotNull
+	@ExistsValue(fieldName = "id", targetClass = Autor.class, message = "Id do Autor(a) não existe")
 	private Long autorId;
 	
-	public LivroRequest(@NotBlank String titulo, @NotBlank @Size(max = 500) String resumo, String sumario,
+	public LivroRequest(@NotBlank String titulo, @NotBlank @Size(max = 500) String resumo, @NotBlank String sumario,
 			@NotNull @Min(20) BigDecimal preco, @NotNull @Min(100) Integer numeroPaginas, @NotBlank String isbn,
-			@Future LocalDate dataPublicacao, @NotNull Long categoriaId, @NotNull Long autorId) {
+			@Future @NotNull LocalDate dataPublicacao, @NotNull Long categoriaId, @NotNull Long autorId) {
 		this.titulo = titulo;
 		this.resumo = resumo;
 		this.sumario = sumario;
@@ -93,12 +98,13 @@ public class LivroRequest {
 	}
 	
 	public Livro toModel(EntityManager manager) {
-		Categoria categoria = manager.find(Categoria.class, categoriaId); // 1
-        Autor autor = manager.find(Autor.class, autorId); // 1
+		Categoria categoria = manager.find(Categoria.class, categoriaId);
+        Autor autor = manager.find(Autor.class, autorId);
 
         Assert.state(autor!=null, "Autor(a) não encontrado(a) para o id " + autorId);
         Assert.state(categoria!=null, "Categoria não encontrado para o id " + categoriaId);
 		
-		return new Livro(this.titulo, this.resumo, this.sumario, this.preco, this.numeroPaginas, this.isbn, this.dataPublicacao, categoria, autor);
+		return new Livro(this.titulo, this.resumo, this.sumario, this.preco, 
+				this.numeroPaginas, this.isbn, this.dataPublicacao, categoria, autor);
 	}
 }
