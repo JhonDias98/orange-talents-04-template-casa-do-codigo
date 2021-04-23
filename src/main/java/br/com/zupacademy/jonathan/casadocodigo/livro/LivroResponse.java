@@ -1,5 +1,7 @@
 package br.com.zupacademy.jonathan.casadocodigo.livro;
 
+import org.springframework.data.domain.Page;
+
 public class LivroResponse {
 
 	private Long id;
@@ -16,5 +18,9 @@ public class LivroResponse {
 
     public String getTitulo() {
         return titulo;
+    }
+    
+    public static Page<LivroResponse> converter(Page<Livro> livros) {
+    	return livros.map(LivroResponse::new);
     }
 }
